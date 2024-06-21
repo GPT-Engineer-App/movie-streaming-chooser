@@ -14,6 +14,8 @@ const Index = () => {
   const [episodes, setEpisodes] = useState([]);
   const [selectedEpisode, setSelectedEpisode] = useState('');
   const [selectedAPI, setSelectedAPI] = useState('vidsrc');
+  const [selectedResult, setSelectedResult] = useState(null);
+  const [playerVisible, setPlayerVisible] = useState(false);
 
   useEffect(() => {
     if (selectedType === 'tv' && selectedTV) {
@@ -45,6 +47,7 @@ const Index = () => {
   };
 
   const handleWatch = () => {
+    setPlayerVisible(true);
     let url = '';
     if (selectedType === 'movie' && selectedMovie) {
       switch (selectedAPI) {
@@ -101,9 +104,21 @@ const Index = () => {
           <Button onClick={() => setSelectedAPI('smashystream')} colorScheme={selectedAPI === 'smashystream' ? 'blue' : 'gray'}>Smashystream</Button>
         </HStack>
         <Input placeholder="Search..." value={searchTerm} onChange={handleSearch} />
-        <VStack spacing={4} width="100%">
+        <HStack spacing={4} width="100%" overflowX="auto">
           {searchResults.map(result => (
-            <Box key={result.id} p={4} borderWidth="1px" borderRadius="lg" width="100%" onClick={() => selectedType === 'movie' ? setSelectedMovie(result) : setSelectedTV(result)}>
+            <Box
+              key={result.id}
+              p={4}
+              borderWidth="1px"
+              borderRadius="lg"
+              width="100%"
+              onClick={() => {
+                selectedType === 'movie' ? setSelectedMovie(result) : setSelectedTV(result);
+                setSelectedResult(result.id);
+              }}
+              _hover={{ bg: 'gray.200', cursor: 'pointer' }}
+              bg={selectedResult === result.id ? 'gray.300' : 'white'}
+            >
               <HStack spacing={4}>
                 <Image boxSize="100px" src={`https://image.tmdb.org/t/p/w200${result.poster_path}`} alt={result.title || result.name} />
                 <VStack align="start">
@@ -114,7 +129,7 @@ const Index = () => {
               </HStack>
             </Box>
           ))}
-        </VStack>
+        </HStack>
         {selectedType === 'tv' && selectedTV && (
           <VStack spacing={4} width="100%">
             <Select placeholder="Select Season" onChange={(e) => setSelectedSeason(e.target.value)}>
@@ -132,6 +147,17 @@ const Index = () => {
           </VStack>
         )}
         <Button colorScheme="teal" onClick={handleWatch}>Watch</Button>
+        {playerVisible && (
+          <Box width="100%" mt={4}>
+            <iframe
+              src={url}
+              width="100%"
+              height="500px"
+              allowFullScreen
+              frameBorder="0"
+            ></iframe>
+          </Box>
+        )}
       </VStack>
     </Container>
   );
