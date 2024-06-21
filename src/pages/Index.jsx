@@ -17,9 +17,10 @@ const Index = () => {
 
   useEffect(() => {
     if (selectedType === 'tv' && selectedTV) {
-      axios.get(`https://api.themoviedb.org/3/tv/${selectedTV.id}/season/${selectedSeason}?api_key=${TMDB_API_KEY}`)
-        .then(response => {
-          setEpisodes(response.data.episodes);
+      fetch(`https://api.themoviedb.org/3/tv/${selectedTV.id}/season/${selectedSeason}?api_key=${TMDB_API_KEY}`)
+        .then(response => response.json())
+        .then(data => {
+          setEpisodes(data.episodes);
         })
         .catch(error => {
           console.error('Error fetching episodes:', error);
