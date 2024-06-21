@@ -4,6 +4,7 @@ import { Container, VStack, HStack, Input, Button, Select, Image, Text, Box, Hea
 const TMDB_API_KEY = '82ba43b22d89e96f0cb5239509660905';
 
 const Index = () => {
+  let url = '';
   const [searchTerm, setSearchTerm] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [selectedType, setSelectedType] = useState('movie');
@@ -48,7 +49,6 @@ const Index = () => {
 
   const handleWatch = () => {
     setPlayerVisible(true);
-    let url = '';
     if (selectedType === 'movie' && selectedMovie) {
       switch (selectedAPI) {
         case 'vidsrc':
@@ -83,9 +83,6 @@ const Index = () => {
         default:
           break;
       }
-    }
-    if (url) {
-      window.open(url, '_blank');
     }
   };
 
