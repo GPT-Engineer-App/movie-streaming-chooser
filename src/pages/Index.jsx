@@ -14,6 +14,7 @@ const Index = () => {
   const [selectedSeason, setSelectedSeason] = useState('');
   const [episodes, setEpisodes] = useState([]);
   const [selectedEpisode, setSelectedEpisode] = useState('');
+  const [selectedAPI, setSelectedAPI] = useState('vidsrc');
 
   useEffect(() => {
     if (selectedType === 'tv' && selectedTV) {
@@ -43,10 +44,44 @@ const Index = () => {
   };
 
   const handleWatch = () => {
+    let url = '';
     if (selectedType === 'movie' && selectedMovie) {
-      window.open(`https://vidsrc.me/embed/${selectedMovie.id}`, '_blank');
+      switch (selectedAPI) {
+        case 'vidsrc':
+          url = `https://vidsrc.pro/embed/movie/${selectedMovie.id}`;
+          break;
+        case 'multiembed':
+          url = `https://multiembed.mov/?video_id=${selectedMovie.id}&tmdb=1`;
+          break;
+        case '2embed':
+          url = `https://2embed.org/embed/movie/${selectedMovie.id}`;
+          break;
+        case 'smashystream':
+          url = `https://player.smashy.stream/movie/${selectedMovie.id}`;
+          break;
+        default:
+          break;
+      }
     } else if (selectedType === 'tv' && selectedTV && selectedSeason && selectedEpisode) {
-      window.open(`https://vidsrc.me/embed/${selectedTV.id}/${selectedSeason}/${selectedEpisode}`, '_blank');
+      switch (selectedAPI) {
+        case 'vidsrc':
+          url = `https://vidsrc.pro/embed/tv/${selectedTV.id}/${selectedSeason}/${selectedEpisode}`;
+          break;
+        case 'multiembed':
+          url = `https://multiembed.mov/?video_id=${selectedTV.id}&tmdb=1&s=${selectedSeason}&e=${selectedEpisode}`;
+          break;
+        case '2embed':
+          url = `https://2embed.org/embed/tv/${selectedTV.id}/${selectedSeason}/${selectedEpisode}`;
+          break;
+        case 'smashystream':
+          url = `https://player.smashy.stream/tv/${selectedTV.id}?s=${selectedSeason}&e=${selectedEpisode}`;
+          break;
+        default:
+          break;
+      }
+    }
+    if (url) {
+      window.open(url, '_blank');
     }
   };
 
@@ -57,6 +92,12 @@ const Index = () => {
         <HStack spacing={4} width="100%">
           <Button onClick={() => setSelectedType('movie')} colorScheme={selectedType === 'movie' ? 'blue' : 'gray'}>Movie</Button>
           <Button onClick={() => setSelectedType('tv')} colorScheme={selectedType === 'tv' ? 'blue' : 'gray'}>TV</Button>
+        </HStack>
+        <HStack spacing={4} width="100%">
+          <Button onClick={() => setSelectedAPI('vidsrc')} colorScheme={selectedAPI === 'vidsrc' ? 'blue' : 'gray'}>Vidsrc</Button>
+          <Button onClick={() => setSelectedAPI('multiembed')} colorScheme={selectedAPI === 'multiembed' ? 'blue' : 'gray'}>Multiembed</Button>
+          <Button onClick={() => setSelectedAPI('2embed')} colorScheme={selectedAPI === '2embed' ? 'blue' : 'gray'}>2embed</Button>
+          <Button onClick={() => setSelectedAPI('smashystream')} colorScheme={selectedAPI === 'smashystream' ? 'blue' : 'gray'}>Smashystream</Button>
         </HStack>
         <Input placeholder="Search..." value={searchTerm} onChange={handleSearch} />
         <VStack spacing={4} width="100%">
