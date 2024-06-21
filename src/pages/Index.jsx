@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Container, VStack, HStack, Input, Button, Select, Image, Text, Box, Heading } from "@chakra-ui/react";
-import axios from 'axios';
 
-const TMDB_API_KEY = 'YOUR_TMDB_API_KEY'; // Replace with your TMDB API key
+const TMDB_API_KEY = '82ba43b22d89e96f0cb5239509660905';
 
 const Index = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -18,9 +17,10 @@ const Index = () => {
 
   useEffect(() => {
     if (selectedType === 'tv' && selectedTV) {
-      axios.get(`https://api.themoviedb.org/3/tv/${selectedTV.id}/season/${selectedSeason}?api_key=${TMDB_API_KEY}`)
-        .then(response => {
-          setEpisodes(response.data.episodes);
+      fetch(`https://api.themoviedb.org/3/tv/${selectedTV.id}/season/${selectedSeason}?api_key=${TMDB_API_KEY}`)
+        .then(response => response.json())
+        .then(data => {
+          setEpisodes(data.episodes);
         })
         .catch(error => {
           console.error('Error fetching episodes:', error);
@@ -31,9 +31,10 @@ const Index = () => {
   const handleSearch = (e) => {
     setSearchTerm(e.target.value);
     if (e.target.value.length > 2) {
-      axios.get(`https://api.themoviedb.org/3/search/${selectedType}?api_key=${TMDB_API_KEY}&query=${e.target.value}`)
-        .then(response => {
-          setSearchResults(response.data.results);
+      fetch(`https://api.themoviedb.org/3/search/${selectedType}?api_key=${TMDB_API_KEY}&query=${e.target.value}`)
+        .then(response => response.json())
+        .then(data => {
+          setSearchResults(data.results);
         })
         .catch(error => {
           console.error('Error fetching search results:', error);
